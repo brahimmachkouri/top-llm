@@ -11,9 +11,9 @@ from bs4 import BeautifulSoup
 CSV_URL   = "https://raw.githubusercontent.com/fboulnois/llm-leaderboard-csv/refs/heads/main/csv/lmsys.csv"
 REPO_URL  = "https://github.com/fboulnois/llm-leaderboard-csv"
 SCORE_COL = "arena_score"
-TOP_N     = 10
-OUT_MD    = "top10_llms.md"
-OUT_JSON  = "top10_llms.json"
+TOP_N     = 20
+OUT_MD    = "top_llms.md"
+OUT_JSON  = "top_llms.json"
 
 OSS = {
     "apache 2.0","apache-2.0","mit","bsd-3-clause","bsd-2-clause",
@@ -32,13 +32,13 @@ df["license"] = df["license"].str.lower().fillna("")
 open_src = df[df["license"].isin(OSS)]
 prop     = df[~df["license"].isin(OSS)]
 
-top10_open = open_src.sort_values(SCORE_COL, ascending=False).head(TOP_N)
-top10_prop = prop.sort_values(SCORE_COL,   ascending=False).head(TOP_N)
+top_open = open_src.sort_values(SCORE_COL, ascending=False).head(TOP_N)
+top_prop = prop.sort_values(SCORE_COL,   ascending=False).head(TOP_N)
 
 keep = ["model", SCORE_COL, "license", "organization"]
 result = {
-    "top10_open_source":    top10_open[keep].to_dict(orient="records"),
-    "top10_proprietary":    top10_prop[keep].to_dict(orient="records")
+    "top_open_source":    top_open[keep].to_dict(orient="records"),
+    "top_proprietary":    top_prop[keep].to_dict(orient="records")
 }
 
 # ─── 3. Export JSON ────────────────────────────────────────────────────────
@@ -95,9 +95,9 @@ except Exception as e:
     print(f"Erreur : {e}")
 md = (
     f"# 🏆 Top {TOP_N} LLMs {maj}\n\n"
-    + to_md(result["top10_open_source"], "Top 10 Open Source")
+    + to_md(result["top_open_source"], "Top Open Source")
     + "\n\n"
-    + to_md(result["top10_proprietary"], "Top 10 Propriétaires")
+    + to_md(result["top_proprietary"], "Top Propriétaires")
     + "\n\n---\n\n"
     + '<div align="center"><sub>Made with ♥ and automation.</sub></div>\n'
     + '<style>.footer { display: none; }</style>'
