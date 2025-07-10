@@ -5,9 +5,11 @@ extract_leaderboard.py
 
 import requests, pandas as pd, io, json
 from datetime import datetime
+from bs4 import BeautifulSoup
 
 # ─── CONFIG ────────────────────────────────────────────────────────────────
 CSV_URL   = "https://raw.githubusercontent.com/fboulnois/llm-leaderboard-csv/refs/heads/main/csv/lmsys.csv"
+REPO_URL  = "https://github.com/fboulnois/llm-leaderboard-csv"
 SCORE_COL = "arena_score"
 TOP_N     = 10
 OUT_MD    = "top10_llms.md"
@@ -54,10 +56,45 @@ def to_md(lst, title):
         )
     return md
 
+
+def get_latest_release_date(url: str) -> str:
+    """
+    Récupère la date de la dernière release indiquée par le label 'Latest'
+    sur une page GitHub.
+
+    :param url: URL de la page GitHub à scrapper
+    :return: date au format AAAA.MM.JJ
+    :raises: HTTPError si la requête échoue, ValueError si le sélecteur ne trouve rien
+    """
+    # 1. Télécharger le HTML
+    response = requests.get(url)
+    response.raise_for_status()
+
+    # 2. Parser le HTML
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    # 3. Sélectionner le span contenant le texte gras (date)
+    #    On cible le premier span à l’intérieur d’un div.d-flex
+    #    dont la classe contient 'css-truncate-target text-bold'
+    date_span = soup.select_one('div.d-flex span.css-truncate-target.text-bold')
+
+    if not date_span:
+        raise ValueError("Date de la dernière release introuvable.")
+
+    # 4. Retourner le texte (p.ex. '2025.07.10')
+    return date_span.get_text(strip=True)
+
+
 # Génération du contenu
-now = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
+#now = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
+maj = ""
+try:
+    date = get_latest_release_date(url)
+    maj = f"(mise à jour : {date})"
+except Exception as e:
+    print(f"Erreur : {e}")
 md = (
-    f"# 🏆 Top {TOP_N} LLMs (mise à jour : {now})\n\n"
+    f"# 🏆 Top {TOP_N} LLMs {maj}\n\n"
     + to_md(result["top10_open_source"], "Top 10 Open Source")
     + "\n\n"
     + to_md(result["top10_proprietary"], "Top 10 Propriétaires")
