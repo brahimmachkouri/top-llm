@@ -23,6 +23,8 @@ jobs:
         run: pip install pandas datasets pyarrow
 
       - name: Run extraction script
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: python extract_leaderboard.py
 
       - name: Check git status
