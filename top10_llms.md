@@ -1,3 +1,5 @@
+# 🏆 Top 10 LLMs (mise à jour : 2025-07-10 14:25 UTC)
+
 ## Top 10 Open Source
 
 | # | Modèle | Score | Licence | Org |
@@ -28,3 +30,8 @@
 | 8 | `Gemini-2.5-Flash-Preview-04-17` | 1398 | proprietary | Google |
 | 9 | `GPT-4.1-2025-04-14` | 1384 | proprietary | OpenAI |
 | 10 | `Hunyuan-Turbos-20250416` | 1380 | proprietary | Tencent |
+
+
+---
+
+<div align="center"><sub>Made with ♥ and automation.</sub></div>
