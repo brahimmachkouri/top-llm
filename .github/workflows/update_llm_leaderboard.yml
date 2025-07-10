@@ -49,19 +49,17 @@ jobs:
             echo "🚀 Changes committed and pushed to main."
           fi
 
-      # 6. Publie le résultat sur GitHub Pages (branche gh-pages)
+      # 6. Crée un dossier temporaire, copie/renomme le fichier
+      - name: Prepare site
+        run: |
+          mkdir site
+          cp top10_llms.md site/index.md
+
+      # 7. Publie le résultat sur GitHub Pages (branche gh-pages)
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
+          publish_dir: ./site
           publish_branch: gh-pages
-          # Copie le fichier de classement en tant que page d'accueil
-          # et ne garde que ce fichier sur la branche.
-          destination_dir: .
-          # Crée un fichier .nojekyll pour le rendu HTML simple
-          enable_jekyll: false
-          # Spécifie les fichiers à inclure
-          # Renomme top10_llms.md en index.md
-          build_dir: |
-            top10_llms.md:index.md
+          disable_jekyll: true
