@@ -20,7 +20,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install pandas datasets pyarrow
+        run: pip install pandas datasets pyarrow beautifulsoup4 lxml
 
       - name: Run extraction script
         env:
