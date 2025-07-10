@@ -89,7 +89,7 @@ def get_latest_release_date(url: str) -> str:
 #now = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
 maj = ""
 try:
-    date = get_latest_release_date(url)
+    date = get_latest_release_date(REPO_URL)
     maj = f"(mise à jour : {date})"
 except Exception as e:
     print(f"Erreur : {e}")
