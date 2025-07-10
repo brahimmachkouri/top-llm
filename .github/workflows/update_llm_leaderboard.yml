@@ -20,7 +20,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install requests pandas
+        run: pip install pandas datasets pyarrow
 
       - name: Run extraction script
         run: python extract_leaderboard.py
