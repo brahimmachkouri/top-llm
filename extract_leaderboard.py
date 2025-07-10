@@ -26,42 +26,52 @@ OSS_REGEX  = r"(apache|mit|bsd|gpl|mpl|lgpl|cc-by|openrail|bigscience)"
 
 # ─── 1. Télécharger la page ───────────────────────────────────────────────
 print("📥 Fetching leaderboard page…")
-html = requests.get(URL, headers=UA_HEADER, timeout=30).text
-soup = BeautifulSoup(html, "lxml")
+try:
+    response = requests.get(URL, headers=UA_HEADER, timeout=30)
+    response.raise_for_status()  # Lève une exception pour les erreurs HTTP (4xx, 5xx)
+    soup = BeautifulSoup(response.text, "lxml")
+except requests.RequestException as e:
+    sys.exit(f"❌ Erreur de réseau ou HTTP en téléchargeant la page : {e}")
 
-# ─── 2. Extraire le blob JSON du script Gradio ────────────────────────────
-script_tag = next(
-    (s for s in soup.find_all("script") if s.string and "window.gradio_config" in s.string),
-    None
-)
-if not script_tag:
-    sys.exit("❌ Gradio config introuvable – structure du site changée ?")
+# ─── 2. Extraire le blob JSON du script Gradio (NOUVELLE LOGIQUE) ──────────
+gradio_json_str = None
+print("🔍 Searching for Gradio data blob in <script> tags...")
 
-match = re.search(
-    r"window\.gradio_config\s*=\s*(\{.*?\})\s*;",
-    script_tag.string,
-    re.S  # DOTALL : le '.' englobe les retours ligne
-)
-if not match:
-    sys.exit("❌ JSON Gradio non trouvé – structure du site changée ?")
+# On cherche une balise <script> qui contient une assignation à un objet JSON
+# contenant la clé "components", typique de Gradio. C'est plus robuste que de
+# chercher un nom de variable fixe comme "window.gradio_config".
+config_regex = re.compile(r"window.gradio_config\s*=\s*(\{.*\});", re.DOTALL)
+
+for script in soup.find_all("script"):
+    if script.string:
+        match = config_regex.search(script.string)
+        if match:
+            gradio_json_str = match.group(1)
+            print("✅ Found Gradio data blob.")
+            break
+
+if not gradio_json_str:
+    sys.exit("❌ Données de configuration Gradio introuvables. La structure du site a probablement changé.")
 
 try:
-    gradio_cfg = json.loads(match.group(1))
+    gradio_cfg = json.loads(gradio_json_str)
 except json.JSONDecodeError as e:
-    sys.exit(f"❌ JSON invalide : {e}")
+    sys.exit(f"❌ JSON de configuration invalide : {e}")
 
 # ─── 3. Trouver le composant “Leaderboard” et ses données ──────────────────
+# (Cette partie reste identique, car elle est déjà robuste)
 lb_data = None
 for comp in gradio_cfg.get("components", []):
     props = comp.get("props", {})
-    if props.get("label") == "Leaderboard" and "value" in props:
+    if isinstance(props, dict) and props.get("label") == "Leaderboard" and "value" in props:
         val = props["value"]
         if isinstance(val, dict) and "headers" in val and "data" in val:
             lb_data = val
+            print("✅ Extracted leaderboard data from components.")
             break
 
 if not lb_data:
-    sys.exit("❌ Données leaderboard non trouvées – structure Gradio changée ?")
+    sys.exit("❌ Données du leaderboard non trouvées dans la config. La structure Gradio a changé.")
 
 headers = lb_data["headers"]
 rows    = lb_data["data"]
@@ -81,7 +91,7 @@ is_open = df["license"].str.contains(OSS_REGEX, case=False, na=False)
 top_open = df[is_open].head(TOP_N).reset_index(drop=True)
 top_prop = df[~is_open].head(TOP_N).reset_index(drop=True)
 
-print(f"✅ {len(top_open)} open-source, {len(top_prop)} propriétaires sélectionnés.")
+print(f"✅ Selected {len(top_open)} open-source and {len(top_prop)} proprietary models.")
 
 # ─── 6. Export JSON ────────────────────────────────────────────────────────
 payload = {
@@ -112,9 +122,9 @@ md_content = (
     + mk_table(top_prop, f"Top {TOP_N} propriétaires")
     + "\n\n"
     + mk_table(top_open, f"Top {TOP_N} open-source", extra=True)
-    + "\n\n*Source : <{URL}>*\n"
+    + f"\n\n*Source : <{URL}>*\n"
 )
 with open(OUT_MD, "w", encoding="utf-8") as f:
     f.write(md_content)
 
-print("🎉  Fichiers générés :", OUT_MD, "&", OUT_JSON)
+print(f"🎉 Files generated: {OUT_MD} & {OUT_JSON}")
