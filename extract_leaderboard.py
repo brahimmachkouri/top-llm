@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+#!/usr-bin/env python3
 """
-extract_leaderboard.py  ·  Fetch LM Arena leaderboard from HF Hub,
+extract_leaderboard.py  ·  Fetch LM Arena leaderboard from its public API,
                            sépare open-source / propriétaire, exporte Top-10.
 """
 
@@ -8,11 +8,12 @@ import os
 import sys
 import json
 import pandas as pd
-from datasets import load_dataset
+import requests  # Nous utilisons requests pour appeler l'API
 from datetime import datetime
 
-# --- CONFIGURATION ---
-DATASET_ID = "lmsys/chatbot-arena-leaderboard"
+# --- NOUVELLE CONFIGURATION ---
+# URL directe de l'API du Space Hugging Face
+API_URL = "https://lmarena-ai-chatbot-arena-leaderboard.hf.space/api/leaderboard"
 OUTPUT_MD = "top10_llms.md"
 OUTPUT_JSON = "top10_llms.json"
 TOP_N = 10
@@ -21,108 +22,90 @@ TOP_N = 10
 
 def fetch_leaderboard():
     """
-    Récupère le leaderboard depuis le dataset Hugging Face en utilisant
-    une authentification sécurisée.
+    Récupère le leaderboard depuis l'API publique du Space Hugging Face.
     """
-    print("Fetching LM Arena leaderboard from Hugging Face Hub…")
+    print("Fetching LM Arena leaderboard from public API…")
     try:
-        # Récupère le token depuis les variables d'environnement (passé par le workflow)
-        hf_token = os.getenv("HF_TOKEN")
-        if not hf_token:
-            print("❌ Erreur: La variable d'environnement HF_TOKEN n'est pas définie.", file=sys.stderr)
-            print("Veuillez la configurer dans les Secrets de votre dépôt GitHub.", file=sys.stderr)
-            sys.exit(1)
-
-        # Utilise le token pour s'authentifier et charger le dataset
-        dataset = load_dataset(DATASET_ID, token=hf_token)
+        response = requests.get(API_URL)
+        # Lève une exception si la requête a échoué (ex: status 404 ou 500)
+        response.raise_for_status()
         
-        # Le dataset contient plusieurs tables, on prend la plus récente
-        df = dataset['latest_arena_leaderboard'].to_pandas()
+        # Le résultat est un JSON, on extrait la partie "data"
+        json_data = response.json()
+        headers = json_data['data'][0]
+        rows = json_data['data'][1:]
+        
+        # Créer un DataFrame pandas avec les bonnes colonnes
+        df = pd.DataFrame(rows, columns=headers)
         
         print("✅ Leaderboard data fetched successfully!")
         return df
-    except Exception as e:
-        print(f"❌ Erreur lors du chargement du dataset depuis Hugging Face : {e}", file=sys.stderr)
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Erreur lors de l'appel à l'API : {e}", file=sys.stderr)
+        sys.exit(1)
+    except (KeyError, IndexError) as e:
+        print(f"❌ Erreur: Le format des données de l'API a peut-être changé. Détails: {e}", file=sys.stderr)
         sys.exit(1)
 
 def process_data(df):
     """
-    Traite le DataFrame pour filtrer et classer les modèles.
+    Traite le DataFrame pour filtrer, renommer et classer les modèles.
     """
     print("Processing data...")
-    # S'assurer que la colonne 'arena_score' est numérique
+    # Renommer les colonnes pour correspondre à notre logique standard
+    df = df.rename(columns={
+        'Model': 'model_name',
+        'Arena Score': 'arena_score',
+        'License': 'license'
+    })
+    
+    # S'assurer que la colonne 'arena_score' est numérique et trier
     df['arena_score'] = pd.to_numeric(df['arena_score'], errors='coerce')
     df = df.dropna(subset=['arena_score'])
     df = df.sort_values(by="arena_score", ascending=False)
     
     # Filtrer les modèles open source
-    # La colonne 'license' contient souvent des infos comme 'apache-2.0', 'mit', etc.
-    # On considère un modèle comme open source s'il a une licence non-propriétaire.
-    # On peut se baser sur la présence du mot "proprietary" ou non.
-    # Ici, nous allons assumer que si la licence n'est pas vide/None et pas propriétaire, c'est open source.
-    # Une approche plus robuste peut être nécessaire si le format de la colonne change.
-    df_open = df[~df['license'].str.contains('proprietary', case=False, na=True)].head(TOP_N)
+    df_open = df[df['license'].str.contains('apache|mit|llama|gpl|mpl', case=False, na=False)].head(TOP_N)
     
     # Filtrer les modèles propriétaires
-    df_proprietary = df[df['license'].str.contains('proprietary', case=False, na=False)].head(TOP_N)
-
-    print(f"✅ Found {len(df_open)} open source models and {len(df_proprietary)} proprietary models for the Top {TOP_N}.")
+    df_proprietary = df[~df['license'].str.contains('apache|mit|llama|gpl|mpl', case=False, na=True)].head(TOP_N)
+    
+    print(f"✅ Data processed. Found {len(df_open)} open-source and {len(df_proprietary)} proprietary models for the Top {TOP_N}.")
     return df_open, df_proprietary
 
+# Les fonctions format_as_markdown, format_as_json, et save_output restent inchangées
+# (Copiez-les depuis votre version précédente ou utilisez celles ci-dessous)
+
 def format_as_markdown(df_open, df_proprietary):
-    """
-    Génère une chaîne de caractères formatée en Markdown.
-    """
     print(f"Formatting data as Markdown for '{OUTPUT_MD}'...")
     now = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')
-
-    md = f"""# 🏆 Top {TOP_N} LLMs du Chatbot Arena
-
-*Dernière mise à jour : {now}*
-
-## 👑 Top {TOP_N} Modèles Propriétaires
-
-| Rang | Modèle | Score Arena |
-|:----:|:-------|:-----------:|
-"""
+    md = f"# Top {TOP_N} LLMs - Leaderboard\n*Dernière mise à jour : {now}*\n\n"
+    
+    md += f"## 🏆 Top {TOP_N} Modèles Propriétaires\n"
+    md += "| Rang | Modèle | Score Arena |\n|---|---|---|\n"
     for index, row in df_proprietary.iterrows():
         md += f"| {index + 1} | **{row['model_name']}** | {row['arena_score']:.2f} |\n"
-
-    md += f"""
-## 🗽 Top {TOP_N} Modèles Open Source
-
-| Rang | Modèle | Score Arena | Licence |
-|:----:|:-------|:-----------:|:--------|
-"""
+        
+    md += f"\n## 🌍 Top {TOP_N} Modèles Open Source\n"
+    md += "| Rang | Modèle | Score Arena | Licence |\n|---|---|---|---|\n"
     for index, row in df_open.iterrows():
         md += f"| {index + 1} | **{row['model_name']}** | {row['arena_score']:.2f} | `{row['license']}` |\n"
         
     md += "\n*Source : [LMSYS Chatbot Arena Leaderboard](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard)*"
-    
-    print("✅ Markdown content generated.")
     return md
 
 def format_as_json(df_open, df_proprietary):
-    """
-    Génère une structure de données JSON.
-    """
     print(f"Formatting data as JSON for '{OUTPUT_JSON}'...")
     now = datetime.utcnow().isoformat()
-    
     data = {
         "last_updated_utc": now,
-        "source": "https://huggingface.co/datasets/lmsys/chatbot_arena_leaderboard",
+        "source": "https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard",
         "top_proprietary": json.loads(df_proprietary[['model_name', 'arena_score']].to_json(orient='records')),
         "top_open_source": json.loads(df_open[['model_name', 'arena_score', 'license']].to_json(orient='records'))
     }
-    
-    print("✅ JSON content generated.")
     return json.dumps(data, indent=2)
 
 def save_output(filename, content):
-    """
-    Sauvegarde le contenu dans un fichier.
-    """
     try:
         with open(filename, 'w', encoding='utf-8') as f:
             f.write(content)
@@ -136,11 +119,9 @@ def main():
     leaderboard_df = fetch_leaderboard()
     df_open, df_proprietary = process_data(leaderboard_df)
     
-    # Générer et sauvegarder le fichier Markdown
     markdown_output = format_as_markdown(df_open, df_proprietary)
     save_output(OUTPUT_MD, markdown_output)
     
-    # Générer et sauvegarder le fichier JSON
     json_output = format_as_json(df_open, df_proprietary)
     save_output(OUTPUT_JSON, json_output)
     
