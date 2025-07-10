@@ -1,85 +1,150 @@
 #!/usr/bin/env python3
 """
-extract_leaderboard_v2.py · Fetch LM Arena leaderboard via HF Datasets,
-                              sépare open-source / propriétaire, exporte Top-10.
+extract_leaderboard.py  ·  Fetch LM Arena leaderboard from HF Hub,
+                           sépare open-source / propriétaire, exporte Top-10.
 """
 
-# Il faut installer 'datasets' et 'pyarrow' :
-# pip install datasets pyarrow
-from datasets import load_dataset
-import pandas as pd
-import json
 import os
 import sys
+import json
+import pandas as pd
+from datasets import load_dataset
+from datetime import datetime
 
-# --- 1. Chargement des données depuis le Hub Hugging Face --------------------
-print("Fetching LM Arena leaderboard from Hugging Face Hub…")
-try:
-    # Charge le dataset directement
-    dataset = load_dataset("lmsys/chatbot_arena_leaderboard")
+# --- CONFIGURATION ---
+DATASET_ID = "lmsys/chatbot_arena_leaderboard"
+OUTPUT_MD = "top10_llms.md"
+OUTPUT_JSON = "top10_llms.json"
+TOP_N = 10
+
+# --- LOGIQUE ---
+
+def fetch_leaderboard():
+    """
+    Récupère le leaderboard depuis le dataset Hugging Face en utilisant
+    une authentification sécurisée.
+    """
+    print("Fetching LM Arena leaderboard from Hugging Face Hub…")
+    try:
+        # Récupère le token depuis les variables d'environnement (passé par le workflow)
+        hf_token = os.getenv("HF_TOKEN")
+        if not hf_token:
+            print("❌ Erreur: La variable d'environnement HF_TOKEN n'est pas définie.", file=sys.stderr)
+            print("Veuillez la configurer dans les Secrets de votre dépôt GitHub.", file=sys.stderr)
+            sys.exit(1)
+
+        # Utilise le token pour s'authentifier et charger le dataset
+        dataset = load_dataset(DATASET_ID, token=hf_token)
+        
+        # Le dataset contient plusieurs tables, on prend la plus récente
+        df = dataset['latest_arena_leaderboard'].to_pandas()
+        
+        print("✅ Leaderboard data fetched successfully!")
+        return df
+    except Exception as e:
+        print(f"❌ Erreur lors du chargement du dataset depuis Hugging Face : {e}", file=sys.stderr)
+        sys.exit(1)
+
+def process_data(df):
+    """
+    Traite le DataFrame pour filtrer et classer les modèles.
+    """
+    print("Processing data...")
+    # S'assurer que la colonne 'arena_score' est numérique
+    df['arena_score'] = pd.to_numeric(df['arena_score'], errors='coerce')
+    df = df.dropna(subset=['arena_score'])
+    df = df.sort_values(by="arena_score", ascending=False)
     
-    # Le dataset contient plusieurs tables, on prend la principale 'leaderboard_table'
-    df = dataset["leaderboard_table"].to_pandas()
+    # Filtrer les modèles open source
+    # La colonne 'license' contient souvent des infos comme 'apache-2.0', 'mit', etc.
+    # On considère un modèle comme open source s'il a une licence non-propriétaire.
+    # On peut se baser sur la présence du mot "proprietary" ou non.
+    # Ici, nous allons assumer que si la licence n'est pas vide/None et pas propriétaire, c'est open source.
+    # Une approche plus robuste peut être nécessaire si le format de la colonne change.
+    df_open = df[~df['license'].str.contains('proprietary', case=False, na=True)].head(TOP_N)
     
-except Exception as e:
-    print(f"Erreur lors du chargement du dataset : {e}", file=sys.stderr)
-    sys.exit(1)
+    # Filtrer les modèles propriétaires
+    df_proprietary = df[df['license'].str.contains('proprietary', case=False, na=False)].head(TOP_N)
 
-# --- 2. Préparation du DataFrame --------------------------------------------
-# Les noms de colonnes sont déjà propres (ex: 'arena_score', 'license', 'organization')
-SCORE_COL = "arena_score"
+    print(f"✅ Found {len(df_open)} open source models and {len(df_proprietary)} proprietary models for the Top {TOP_N}.")
+    return df_open, df_proprietary
 
-# S'assurer que la colonne 'arena_score' existe
-if SCORE_COL not in df.columns:
-    print(f"La colonne attendue '{SCORE_COL}' n'a pas été trouvée.", file=sys.stderr)
-    sys.exit(1)
+def format_as_markdown(df_open, df_proprietary):
+    """
+    Génère une chaîne de caractères formatée en Markdown.
+    """
+    print(f"Formatting data as Markdown for '{OUTPUT_MD}'...")
+    now = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')
 
-# --- 3. Détection open-source vs propriétaire -------------------------------
-# La logique reste la même, excellente définition des licences !
-OSS_LICENSES = {
-    "apache-2.0", "apache 2.0", "mit", "gpl-3.0", "bsd-3-clause", "bsd-2-clause",
-    "cc-by-4.0", "cc-by-sa-4.0", "mpl-2.0", "openrail", "openrail-m", "openrail++",
-    "llama-3-community-license", "mistral-7b-license" # Ajout de quelques licences communes
-}
+    md = f"""# 🏆 Top {TOP_N} LLMs du Chatbot Arena
 
-df["license"] = df["license"].str.lower().fillna("")
+*Dernière mise à jour : {now}*
 
-# On filtre les modèles qui n'ont pas encore de score
-df_scored = df.dropna(subset=[SCORE_COL])
+## 👑 Top {TOP_N} Modèles Propriétaires
 
-open_src = df_scored[df_scored["license"].isin(OSS_LICENSES)]
-prop     = df_scored[~df_scored["license"].isin(OSS_LICENSES)]
+| Rang | Modèle | Score Arena |
+|:----:|:-------|:-----------:|
+"""
+    for index, row in df_proprietary.iterrows():
+        md += f"| {index + 1} | **{row['model_name']}** | {row['arena_score']:.2f} |\n"
 
-top10_open = open_src.sort_values(SCORE_COL, ascending=False).head(10)
-top10_prop = prop.sort_values(SCORE_COL,   ascending=False).head(10)
+    md += f"""
+## 🗽 Top {TOP_N} Modèles Open Source
 
-# --- 4. Export JSON ----------------------------------------------------------
-# La logique reste la même
-keep = ["model", SCORE_COL, "license", "organization"]
-result = {
-    "top10_open_source": top10_open[keep].to_dict(orient="records"),
-    "top10_proprietary": top10_prop[keep].to_dict(orient="records")
-}
-
-with open("top10_llms.json", "w", encoding="utf-8") as f:
-    json.dump(result, f, indent=2, ensure_ascii=False)
-
-# --- 5. Export Markdown ------------------------------------------------------
-# La logique reste la même
-def to_md(lst, title):
-    col_score = SCORE_COL.replace("_", " ").title()
-    md = f"## {title}\n\n| # | Modèle | {col_score} | Licence | Org |\n"
-    md += "|---|---|---|---|---|\n"
-    for i, m in enumerate(lst, 1):
-        md += (
-            f"| {i} | `{m['model']}` | {m[SCORE_COL]:.2f} | "
-            f"`{m['license']}` | {m['organization']} |\n"
-        )
+| Rang | Modèle | Score Arena | Licence |
+|:----:|:-------|:-----------:|:--------|
+"""
+    for index, row in df_open.iterrows():
+        md += f"| {index + 1} | **{row['model_name']}** | {row['arena_score']:.2f} | `{row['license']}` |\n"
+        
+    md += "\n*Source : [LMSYS Chatbot Arena Leaderboard](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard)*"
+    
+    print("✅ Markdown content generated.")
     return md
 
-with open("top10_llms.md", "w", encoding="utf-8") as f:
-    f.write(to_md(result["top10_open_source"], "Top 10 Open Source"))
-    f.write("\n\n")
-    f.write(to_md(result["top10_proprietary"], "Top 10 Propriétaires"))
+def format_as_json(df_open, df_proprietary):
+    """
+    Génère une structure de données JSON.
+    """
+    print(f"Formatting data as JSON for '{OUTPUT_JSON}'...")
+    now = datetime.utcnow().isoformat()
+    
+    data = {
+        "last_updated_utc": now,
+        "source": "https://huggingface.co/datasets/lmsys/chatbot_arena_leaderboard",
+        "top_proprietary": json.loads(df_proprietary[['model_name', 'arena_score']].to_json(orient='records')),
+        "top_open_source": json.loads(df_open[['model_name', 'arena_score', 'license']].to_json(orient='records'))
+    }
+    
+    print("✅ JSON content generated.")
+    return json.dumps(data, indent=2)
 
-print("✅  Fichiers générés : top10_llms.md  &  top10_llms.json")
+def save_output(filename, content):
+    """
+    Sauvegarde le contenu dans un fichier.
+    """
+    try:
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write(content)
+        print(f"✅ Successfully saved file: '{filename}'")
+    except IOError as e:
+        print(f"❌ Erreur lors de l'écriture du fichier '{filename}': {e}", file=sys.stderr)
+        sys.exit(1)
+
+def main():
+    """Fonction principale du script."""
+    leaderboard_df = fetch_leaderboard()
+    df_open, df_proprietary = process_data(leaderboard_df)
+    
+    # Générer et sauvegarder le fichier Markdown
+    markdown_output = format_as_markdown(df_open, df_proprietary)
+    save_output(OUTPUT_MD, markdown_output)
+    
+    # Générer et sauvegarder le fichier JSON
+    json_output = format_as_json(df_open, df_proprietary)
+    save_output(OUTPUT_JSON, json_output)
+    
+    print("\n🎉 Script finished successfully!")
+
+if __name__ == "__main__":
+    main()
