@@ -33,7 +33,7 @@ jobs:
 
       # 4. Exécute le script Python
       - name: Run script to generate files
-        run: python votre_script.py 
+        run: python extract_leaderboard.py 
 
       # 5. Valide et pousse les changements sur la branche 'main'
       - name: Commit and push to main
