@@ -1,15 +1,12 @@
 import requests, pandas as pd, io, json
 
-CSV_URL = (
-    "https://raw.githubusercontent.com/"
-    "fboulnois/llm-leaderboard-csv/refs/heads/main/csv/lmsys.csv"
-)
+CSV_URL = ("https://raw.githubusercontent.com/fboulnois/llm-leaderboard-csv/refs/heads/main/csv/lmsys.csv")
 
 csv_text = requests.get(CSV_URL, timeout=30).text
 df = pd.read_csv(io.StringIO(csv_text))
 
 # colonne contenant le score
-SCORE_COL = "arena_score"          # confirmé dans ton extrait
+SCORE_COL = "arena_score"
 
 # liste (non exhaustive) des licences open-source
 OSS = {
