@@ -3,7 +3,7 @@ name: Update LLM Leaderboard Top 10
 on:
   # Se déclenche à 03:00 UTC tous les lundis
   schedule:
-    - cron: '0 3 * * 1'
+    - cron: '0 3 * * *'
   # Permet un déclenchement manuel
   workflow_dispatch:
 
