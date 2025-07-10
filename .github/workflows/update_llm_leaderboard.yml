@@ -1,7 +1,7 @@
 name: Update LLM Leaderboard Top 10
 
 on:
-  # Se déclenche à 03:00 UTC tous les lundis
+  # Ce cron s'exécute tous les jours à 03:00 UTC.
   schedule:
     - cron: '0 3 * * *'
   # Permet un déclenchement manuel
@@ -27,7 +27,6 @@ jobs:
           python-version: '3.11'
 
       # 3. Installe SEULEMENT les dépendances nécessaires
-      # Votre nouveau script n'a besoin que de pandas et requests.
       - name: Install dependencies
         run: pip install pandas requests
 
@@ -49,11 +48,16 @@ jobs:
             echo "🚀 Changes committed and pushed to main."
           fi
 
-      # 6. Crée un dossier temporaire, copie/renomme le fichier
+      # 6. Crée un dossier temporaire pour le site et copie les fichiers nécessaires
       - name: Prepare site
         run: |
           mkdir site
           cp top10_llms.md site/index.md
+          # AJOUT IMPORTANT : Copie le fichier de configuration dans le dossier du site.
+          # Sans cette ligne, GitHub Pages ne peut pas trouver la configuration pour le titre.
+          if [ -f _config.yml ]; then
+            cp _config.yml site/
+          fi
 
       # 7. Publie le résultat sur GitHub Pages (branche gh-pages)
       - name: Deploy to GitHub Pages
@@ -62,4 +66,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./site
           publish_branch: gh-pages
-          enable_jekyll: false
