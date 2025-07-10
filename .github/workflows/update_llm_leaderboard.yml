@@ -52,7 +52,7 @@ jobs:
       - name: Prepare site
         run: |
           mkdir site
-          cp top10_llms.md site/index.md
+          cp top_llms.md site/index.md
           # AJOUT IMPORTANT : Copie le fichier de configuration dans le dossier du site.
           # Sans cette ligne, GitHub Pages ne peut pas trouver la configuration pour le titre.
           if [ -f _config.yml ]; then
