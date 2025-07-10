@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -21,6 +24,9 @@ jobs:
 
       - name: Run extraction script
         run: python extract_leaderboard.py
+
+      - name: Check git status
+        run: git status
 
       - name: Commit and push to main
         run: |
