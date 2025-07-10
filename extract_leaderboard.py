@@ -21,25 +21,40 @@ URL        = "https://lmarena.ai/leaderboard"
 TOP_N      = 10
 OUT_MD     = "top10_llms.md"
 OUT_JSON   = "top10_llms.json"
-UA_HEADER  = {"User-Agent": "llm-top-10-gh-action"}
 OSS_REGEX  = r"(apache|mit|bsd|gpl|mpl|lgpl|cc-by|openrail|bigscience)"
 
+# NOUVEAUX EN-TÊTES POUR CONTOURNER L'ERREUR 403 (Cloudflare, etc.)
+# Ils simulent une requête d'un navigateur Chrome sur Windows.
+HEADERS    = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Connection': 'keep-alive',
+    'Upgrade-Insecure-Requests': '1',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'none',
+    'Sec-Fetch-User': '?1',
+    'Cache-Control': 'max-age=0',
+}
+
+
 # ─── 1. Télécharger la page ───────────────────────────────────────────────
-print("📥 Fetching leaderboard page…")
+print("📥 Fetching leaderboard page with browser headers...")
 try:
-    response = requests.get(URL, headers=UA_HEADER, timeout=30)
-    response.raise_for_status()  # Lève une exception pour les erreurs HTTP (4xx, 5xx)
+    # On utilise maintenant la variable HEADERS complète
+    response = requests.get(URL, headers=HEADERS, timeout=30)
+    response.raise_for_status()
     soup = BeautifulSoup(response.text, "lxml")
 except requests.RequestException as e:
     sys.exit(f"❌ Erreur de réseau ou HTTP en téléchargeant la page : {e}")
 
-# ─── 2. Extraire le blob JSON du script Gradio (NOUVELLE LOGIQUE) ──────────
-gradio_json_str = None
-print("🔍 Searching for Gradio data blob in <script> tags...")
+# Le reste du script est inchangé car sa logique est toujours valide.
 
-# On cherche une balise <script> qui contient une assignation à un objet JSON
-# contenant la clé "components", typique de Gradio. C'est plus robuste que de
-# chercher un nom de variable fixe comme "window.gradio_config".
+# ─── 2. Extraire le blob JSON du script Gradio ────────────────────────────
+print("🔍 Searching for Gradio data blob in <script> tags...")
+gradio_json_str = None
 config_regex = re.compile(r"window.gradio_config\s*=\s*(\{.*\});", re.DOTALL)
 
 for script in soup.find_all("script"):
@@ -58,8 +73,8 @@ try:
 except json.JSONDecodeError as e:
     sys.exit(f"❌ JSON de configuration invalide : {e}")
 
+
 # ─── 3. Trouver le composant “Leaderboard” et ses données ──────────────────
-# (Cette partie reste identique, car elle est déjà robuste)
 lb_data = None
 for comp in gradio_cfg.get("components", []):
     props = comp.get("props", {})
