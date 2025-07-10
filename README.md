@@ -9,7 +9,7 @@
 Ce dépôt maintient deux classements basés sur le CSV publié par [`fboulnois/llm-leaderboard-csv`](https://github.com/fboulnois/llm-leaderboard-csv) :
 
 1. **Top 10 open‑source** – modèles libres (licence permissive) utilisables localement.
-2. **Top 10 propriétaires** – modèles accessibles uniquement via API (GPT‑4o, Gemini 2.5 Pro, Claude 4, etc.).
+2. **Top 10 propriétaires** – modèles comme GPT‑4o, Gemini 2.5 Pro, Claude 4, etc.
 
 Les classements sont republiés :
 - en **Markdown** : [`top10_llms.md`](./top10_llms.md)
