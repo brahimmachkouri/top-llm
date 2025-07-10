@@ -1,4 +1,4 @@
-# 🏆 Top 10 LLMs 
+# 🏆 Top 10 LLMs (mise à jour : 2025.07.10)
 
 ## Top 10 Open Source
 
