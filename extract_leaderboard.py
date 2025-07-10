@@ -12,8 +12,7 @@ from datasets import load_dataset
 from datetime import datetime
 
 # --- CONFIGURATION ---
-#DATASET_ID = "lmsys/chatbot_arena_leaderboard"
- DATASET_ID = "lmsys/chatbot-arena-leaderboard"
+DATASET_ID = "lmsys/chatbot-arena-leaderboard"
 OUTPUT_MD = "top10_llms.md"
 OUTPUT_JSON = "top10_llms.json"
 TOP_N = 10
