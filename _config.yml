@@ -1,0 +1,10 @@
+# --- Titre et description du site ---
+# Le titre qui apparaîtra dans l'onglet du navigateur
+title: TOP 10 des Meilleurs LLMs
+
+# Une courte description (utilisée par les moteurs de recherche et certains thèmes)
+description: Un suivi des 10 meilleurs modèles de langage open source et propriétaires.
+
+# --- Configuration du pied de page ---
+# Pour le thème par défaut, cette ligne remplace le footer "Improve this page"
+footer_content: "Made with ♥ and automation."
