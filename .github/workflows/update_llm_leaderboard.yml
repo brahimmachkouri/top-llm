@@ -58,6 +58,10 @@ jobs:
           if [ -f _config.yml ]; then
             cp _config.yml site/
           fi
+          # Copie le dossier des 'includes' s'il existe
+          if [ -d _includes ]; then
+            cp -r _includes site/
+          fi
 
       # 7. Publie le résultat sur GitHub Pages (branche gh-pages)
       - name: Deploy to GitHub Pages
