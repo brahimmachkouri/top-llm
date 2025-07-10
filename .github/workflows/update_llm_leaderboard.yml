@@ -28,7 +28,7 @@ jobs:
 
       # 3. Installe SEULEMENT les dépendances nécessaires
       - name: Install dependencies
-        run: pip install pandas requests
+        run: pip install pandas requests beautifulsoup4
 
       # 4. Exécute le script Python
       - name: Run script to generate files
