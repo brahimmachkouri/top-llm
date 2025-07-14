@@ -1,0 +1,246 @@
+{
+  "top_open_source": [
+    {
+      "model": "DeepSeek-R1-0528",
+      "arena_score": 1425,
+      "license": "mit",
+      "organization": "DeepSeek"
+    },
+    {
+      "model": "Qwen3-235B-A22B-no-thinking",
+      "arena_score": 1392,
+      "license": "apache 2.0",
+      "organization": "Alibaba"
+    },
+    {
+      "model": "DeepSeek-V3-0324",
+      "arena_score": 1382,
+      "license": "mit",
+      "organization": "DeepSeek"
+    },
+    {
+      "model": "Minimax-M1",
+      "arena_score": 1376,
+      "license": "apache 2.0",
+      "organization": "MiniMax"
+    },
+    {
+      "model": "DeepSeek-R1",
+      "arena_score": 1374,
+      "license": "mit",
+      "organization": "DeepSeek"
+    },
+    {
+      "model": "Qwen3-235B-A22B",
+      "arena_score": 1367,
+      "license": "apache 2.0",
+      "organization": "Alibaba"
+    },
+    {
+      "model": "Qwen3-32B",
+      "arena_score": 1344,
+      "license": "apache 2.0",
+      "organization": "Alibaba"
+    },
+    {
+      "model": "QwQ-32B",
+      "arena_score": 1333,
+      "license": "apache 2.0",
+      "organization": "Alibaba"
+    },
+    {
+      "model": "Mistral-Small-2506",
+      "arena_score": 1332,
+      "license": "apache 2.0",
+      "organization": "Mistral"
+    },
+    {
+      "model": "Qwen3-30B-A3B",
+      "arena_score": 1323,
+      "license": "apache 2.0",
+      "organization": "Alibaba"
+    },
+    {
+      "model": "Mistral-Small-3.1-24B-Instruct-2503",
+      "arena_score": 1271,
+      "license": "apache 2.0",
+      "organization": "Mistral"
+    },
+    {
+      "model": "Qwen2.5-Coder-32B-Instruct",
+      "arena_score": 1233,
+      "license": "apache 2.0",
+      "organization": "Alibaba"
+    },
+    {
+      "model": "Mistral-Small-24B-Instruct-2501",
+      "arena_score": 1233,
+      "license": "apache 2.0",
+      "organization": "Mistral"
+    },
+    {
+      "model": "Gemma-2-9B-it-SimPO",
+      "arena_score": 1232,
+      "license": "mit",
+      "organization": "Princeton"
+    },
+    {
+      "model": "OLMo-2-0325-32B-Instruct",
+      "arena_score": 1222,
+      "license": "apache-2.0",
+      "organization": "Allen AI"
+    },
+    {
+      "model": "Phi-4",
+      "arena_score": 1221,
+      "license": "mit",
+      "organization": "Microsoft"
+    },
+    {
+      "model": "Yi-1.5-34B-Chat",
+      "arena_score": 1173,
+      "license": "apache-2.0",
+      "organization": "01 AI"
+    },
+    {
+      "model": "QwQ-32B-Preview",
+      "arena_score": 1169,
+      "license": "apache 2.0",
+      "organization": "Alibaba"
+    },
+    {
+      "model": "Mixtral-8x22b-Instruct-v0.1",
+      "arena_score": 1163,
+      "license": "apache 2.0",
+      "organization": "Mistral"
+    },
+    {
+      "model": "Granite-3.1-8B-Instruct",
+      "arena_score": 1159,
+      "license": "apache 2.0",
+      "organization": "IBM"
+    }
+  ],
+  "top_proprietary": [
+    {
+      "model": "Gemini-2.5-Pro",
+      "arena_score": 1477,
+      "license": "proprietary",
+      "organization": "Google"
+    },
+    {
+      "model": "Gemini-2.5-Pro-Preview-05-06",
+      "arena_score": 1446,
+      "license": "proprietary",
+      "organization": "Google"
+    },
+    {
+      "model": "ChatGPT-4o-latest (2025-03-26)",
+      "arena_score": 1429,
+      "license": "proprietary",
+      "organization": "OpenAI"
+    },
+    {
+      "model": "o3-2025-04-16",
+      "arena_score": 1427,
+      "license": "proprietary",
+      "organization": "OpenAI"
+    },
+    {
+      "model": "Grok-3-Preview-02-24",
+      "arena_score": 1422,
+      "license": "proprietary",
+      "organization": "xAI"
+    },
+    {
+      "model": "Gemini-2.5-Flash",
+      "arena_score": 1418,
+      "license": "proprietary",
+      "organization": "Google"
+    },
+    {
+      "model": "GPT-4.5-Preview",
+      "arena_score": 1414,
+      "license": "proprietary",
+      "organization": "OpenAI"
+    },
+    {
+      "model": "Gemini-2.5-Flash-Preview-04-17",
+      "arena_score": 1398,
+      "license": "proprietary",
+      "organization": "Google"
+    },
+    {
+      "model": "GPT-4.1-2025-04-14",
+      "arena_score": 1384,
+      "license": "proprietary",
+      "organization": "OpenAI"
+    },
+    {
+      "model": "Hunyuan-Turbos-20250416",
+      "arena_score": 1380,
+      "license": "proprietary",
+      "organization": "Tencent"
+    },
+    {
+      "model": "Mistral Medium 3",
+      "arena_score": 1370,
+      "license": "proprietary",
+      "organization": "Mistral"
+    },
+    {
+      "model": "Claude Opus 4 (20250514)",
+      "arena_score": 1370,
+      "license": "proprietary",
+      "organization": "Anthropic"
+    },
+    {
+      "model": "o1-2024-12-17",
+      "arena_score": 1366,
+      "license": "proprietary",
+      "organization": "OpenAI"
+    },
+    {
+      "model": "o4-mini-2025-04-16",
+      "arena_score": 1363,
+      "license": "proprietary",
+      "organization": "OpenAI"
+    },
+    {
+      "model": "Qwen2.5-Max",
+      "arena_score": 1363,
+      "license": "proprietary",
+      "organization": "Alibaba"
+    },
+    {
+      "model": "Gemini-2.0-Flash-001",
+      "arena_score": 1363,
+      "license": "proprietary",
+      "organization": "Google"
+    },
+    {
+      "model": "Gemma-3-27B-it",
+      "arena_score": 1360,
+      "license": "gemma",
+      "organization": "Google"
+    },
+    {
+      "model": "Grok-3-Mini-beta",
+      "arena_score": 1359,
+      "license": "proprietary",
+      "organization": "xAI"
+    },
+    {
+      "model": "o1-preview",
+      "arena_score": 1351,
+      "license": "proprietary",
+      "organization": "OpenAI"
+    },
+    {
+      "model": "Claude Sonnet 4 (20250514)",
+      "arena_score": 1343,
+      "license": "proprietary",
+      "organization": "Anthropic"
+    }
+  ]
+}
