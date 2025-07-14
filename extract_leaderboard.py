@@ -5,10 +5,10 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 
 # ─── CONFIG ────────────────────────────────────────────────────────────────
+TOP_N     = 50
 CSV_URL   = "https://raw.githubusercontent.com/fboulnois/llm-leaderboard-csv/refs/heads/main/csv/lmsys.csv"
 REPO_URL  = "https://github.com/fboulnois/llm-leaderboard-csv"
 SCORE_COL = "arena_score"
-TOP_N     = 20
 OUT_MD    = "top_llms.md"
 OUT_JSON  = "top_llms.json"
 
