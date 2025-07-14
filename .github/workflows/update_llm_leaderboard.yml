@@ -1,4 +1,4 @@
-name: Update LLM Leaderboard Top 10
+name: Update Top LLM Leaderboard
 
 on:
   # Ce cron s'exécute tous les jours à 03:00 UTC.
@@ -39,10 +39,10 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          if git diff --quiet top10_llms.md top10_llms.json; then
+          if git diff --quiet top_llms.md top_llms.json; then
             echo "✅ No changes to commit."
           else
-            git add top10_llms.md top10_llms.json
+            git add top_llms.md top_llms.json
             git commit -m "update: leaderboard top 10s [auto]"
             git push
             echo "🚀 Changes committed and pushed to main."
