@@ -1,6 +1,6 @@
-# TOP 10 des meilleurs LLMs
+# TOP des meilleurs LLMs
 
-> _Suivi automatisé du **Top 10** des modèles LLM : open‑source **vs** propriétaires._  
+> _Suivi automatisé du **Top** des modèles LLM : open‑source **vs** propriétaires._  
 > Mises à jour quotidienne via **GitHub Actions** · Résultats consultables en JSON, Markdown et GitHub Pages.
 
 ---
@@ -8,13 +8,13 @@
 ## 🚀 Qu’est‑ce que c’est ?
 Ce dépôt maintient deux classements basés sur le CSV publié par [`fboulnois/llm-leaderboard-csv`](https://github.com/fboulnois/llm-leaderboard-csv) :
 
-1. **Top 10 open‑source** – modèles libres (licence permissive) utilisables localement.
-2. **Top 10 propriétaires** – modèles comme GPT‑4o, Gemini 2.5 Pro, Claude 4, etc.
+1. **Top open‑source** – modèles libres (licence permissive) utilisables localement.
+2. **Top propriétaires** – modèles comme GPT‑4o, Gemini 2.5 Pro, Claude 4, etc.
 
 Les classements sont republiés :
-- en **Markdown** : [`top10_llms.md`](./top10_llms.md)
-- en **JSON** : [`top10_llms.json`](./top10_llms.json)
-- sur **GitHub Pages** : <https://brahimmachkouri.github.io/llm-top-10/> (copie de `top10_llms.md`)
+- en **Markdown** : [`top_llms.md`](./top_llms.md)
+- en **JSON** : [`top_llms.json`](./top_llms.json)
+- sur **GitHub Pages** : <https://brahimmachkouri.github.io/top-llm/> (copie de `top10_llms.md`)
 
 ---
 
