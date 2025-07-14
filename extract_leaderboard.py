@@ -96,8 +96,6 @@ md = (
     + "\n\n"
     + to_md(result["top_proprietary"], "Top Propriétaires")
     + "\n\n---\n\n"
-    + '<div align="center"><sub>Made with ♥ and automation.</sub></div>\n'
-    + '<style>.footer { display: none; }</style>'
 )
 
 with open(OUT_MD, "w", encoding="utf-8") as f:
