@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-"""
-extract_leaderboard.py
-"""
 
 import requests, pandas as pd, io, json
 from datetime import datetime
