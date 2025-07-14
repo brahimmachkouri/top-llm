@@ -39,14 +39,17 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          if git diff --quiet top_llms.md top_llms.json; then
+          # 1. On stage TOUS les nouveaux/modified fichiers
+          git add top_llms.md top_llms.json
+          # 2. On teste si l'index diffère de HEAD
+          if git diff --cached --quiet; then
             echo "✅ No changes to commit."
           else
-            git add top_llms.md top_llms.json
-            git commit -m "update: leaderboard top 10s [auto]"
+            git commit -m "update: leaderboard top ${TOP_N}s [auto]"
             git push
             echo "🚀 Changes committed and pushed to main."
           fi
+
 
       # 6. Crée un dossier temporaire pour le site et copie les fichiers nécessaires
       - name: Prepare site
