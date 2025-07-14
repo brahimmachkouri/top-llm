@@ -56,6 +56,13 @@ jobs:
         run: |
           mkdir site
           cp top_llms.md site/index.md
+
+          # On ajoute ici notre footer HTML
+          cat << 'EOF' >> site/index.md
+          <div align="center"><sub>Made with ♥ and automation.</sub></div>
+          <style>.footer { display: none; }</style>
+          EOF
+          
           # AJOUT IMPORTANT : Copie le fichier de configuration dans le dossier du site.
           # Sans cette ligne, GitHub Pages ne peut pas trouver la configuration pour le titre.
           if [ -f _config.yml ]; then
