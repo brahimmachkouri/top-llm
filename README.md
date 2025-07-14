@@ -1,7 +1,6 @@
 # TOP des meilleurs LLMs
 
-> _Suivi automatisé du **Top** des modèles LLM : open‑source **vs** propriétaires._  
-> Mises à jour quotidienne via **GitHub Actions** · Résultats consultables en JSON, Markdown et GitHub Pages.
+> _Suivi automatisé régulier du **Top** des modèles LLM : open‑source **vs** propriétaires._  
 
 ---
 
