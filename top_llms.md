@@ -54,5 +54,3 @@
 
 ---
 
-<div align="center"><sub>Made with ♥ and automation.</sub></div>
-<style>.footer { display: none; }</style>
