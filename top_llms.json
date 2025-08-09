@@ -1,0 +1,246 @@
+{
+  "top_open_source": [
+    {
+      "model": "GLM-4.5",
+      "arena_score": 1434,
+      "license": "mit",
+      "organization": "Z.ai"
+    },
+    {
+      "model": "Qwen3-235B-A22B-Instruct-2507",
+      "arena_score": 1427,
+      "license": "apache 2.0",
+      "organization": "Alibaba"
+    },
+    {
+      "model": "DeepSeek-R1-0528",
+      "arena_score": 1427,
+      "license": "mit",
+      "organization": "DeepSeek"
+    },
+    {
+      "model": "Qwen3-235B-A22B-Thinking-2507",
+      "arena_score": 1413,
+      "license": "apache 2.0",
+      "organization": "Alibaba"
+    },
+    {
+      "model": "GLM-4.5-Air",
+      "arena_score": 1393,
+      "license": "mit",
+      "organization": "Z.ai"
+    },
+    {
+      "model": "Qwen3-235B-A22B-no-thinking",
+      "arena_score": 1391,
+      "license": "apache 2.0",
+      "organization": "Alibaba"
+    },
+    {
+      "model": "Qwen3-30B-A3B-Instruct-2507",
+      "arena_score": 1380,
+      "license": "apache 2.0",
+      "organization": "Alibaba"
+    },
+    {
+      "model": "DeepSeek-V3-0324",
+      "arena_score": 1376,
+      "license": "mit",
+      "organization": "DeepSeek"
+    },
+    {
+      "model": "DeepSeek-R1",
+      "arena_score": 1372,
+      "license": "mit",
+      "organization": "DeepSeek"
+    },
+    {
+      "model": "Qwen3-235B-A22B",
+      "arena_score": 1365,
+      "license": "apache 2.0",
+      "organization": "Alibaba"
+    },
+    {
+      "model": "Qwen3-Coder-480B-A35B-Instruct",
+      "arena_score": 1357,
+      "license": "apache 2.0",
+      "organization": "Alibaba"
+    },
+    {
+      "model": "Minimax-M1",
+      "arena_score": 1354,
+      "license": "apache 2.0",
+      "organization": "MiniMax"
+    },
+    {
+      "model": "Qwen3-32B",
+      "arena_score": 1341,
+      "license": "apache 2.0",
+      "organization": "Alibaba"
+    },
+    {
+      "model": "Mistral-Small-2506",
+      "arena_score": 1335,
+      "license": "apache 2.0",
+      "organization": "Mistral"
+    },
+    {
+      "model": "QwQ-32B",
+      "arena_score": 1331,
+      "license": "apache 2.0",
+      "organization": "Alibaba"
+    },
+    {
+      "model": "Qwen3-30B-A3B",
+      "arena_score": 1320,
+      "license": "apache 2.0",
+      "organization": "Alibaba"
+    },
+    {
+      "model": "Mistral-Small-3.1-24B-Instruct-2503",
+      "arena_score": 1269,
+      "license": "apache 2.0",
+      "organization": "Mistral"
+    },
+    {
+      "model": "Mistral-Small-24B-Instruct-2501",
+      "arena_score": 1238,
+      "license": "apache 2.0",
+      "organization": "Mistral"
+    },
+    {
+      "model": "Qwen2.5-Coder-32B-Instruct",
+      "arena_score": 1234,
+      "license": "apache 2.0",
+      "organization": "Alibaba"
+    },
+    {
+      "model": "Gemma-2-9B-it-SimPO",
+      "arena_score": 1232,
+      "license": "mit",
+      "organization": "Princeton"
+    }
+  ],
+  "top_proprietary": [
+    {
+      "model": "Gemini-2.5-Pro",
+      "arena_score": 1470,
+      "license": "proprietary",
+      "organization": "Google"
+    },
+    {
+      "model": "Gemini-2.5-Pro-Preview-05-06",
+      "arena_score": 1446,
+      "license": "proprietary",
+      "organization": "Google"
+    },
+    {
+      "model": "Grok-4-0709",
+      "arena_score": 1434,
+      "license": "proprietary",
+      "organization": "xAI"
+    },
+    {
+      "model": "ChatGPT-4o-latest (2025-03-26)",
+      "arena_score": 1429,
+      "license": "proprietary",
+      "organization": "OpenAI"
+    },
+    {
+      "model": "o3-2025-04-16",
+      "arena_score": 1428,
+      "license": "proprietary",
+      "organization": "OpenAI"
+    },
+    {
+      "model": "Grok-3-Preview-02-24",
+      "arena_score": 1423,
+      "license": "proprietary",
+      "organization": "xAI"
+    },
+    {
+      "model": "Llama-4-Maverick-03-26-Experimental",
+      "arena_score": 1416,
+      "license": "",
+      "organization": "Meta"
+    },
+    {
+      "model": "GPT-4.5-Preview",
+      "arena_score": 1415,
+      "license": "proprietary",
+      "organization": "OpenAI"
+    },
+    {
+      "model": "chocolate (Early Grok-3)",
+      "arena_score": 1412,
+      "license": "proprietary",
+      "organization": "xAI"
+    },
+    {
+      "model": "Gemini-2.5-Flash",
+      "arena_score": 1411,
+      "license": "proprietary",
+      "organization": "Google"
+    },
+    {
+      "model": "Gemini-2.0-Flash-Thinking-Exp-01-21",
+      "arena_score": 1397,
+      "license": "proprietary",
+      "organization": "Google"
+    },
+    {
+      "model": "Gemini-2.0-Pro-Exp-02-05",
+      "arena_score": 1397,
+      "license": "proprietary",
+      "organization": "Google"
+    },
+    {
+      "model": "Gemini-2.5-Flash-Preview-04-17",
+      "arena_score": 1396,
+      "license": "proprietary",
+      "organization": "Google"
+    },
+    {
+      "model": "Gemini-Exp-1206",
+      "arena_score": 1389,
+      "license": "proprietary",
+      "organization": "Google"
+    },
+    {
+      "model": "ChatGPT-4o-latest (2025-01-29)",
+      "arena_score": 1389,
+      "license": "proprietary",
+      "organization": "OpenAI"
+    },
+    {
+      "model": "ChatGPT-4o-latest (2024-11-20)",
+      "arena_score": 1381,
+      "license": "proprietary",
+      "organization": "OpenAI"
+    },
+    {
+      "model": "kimi-k2-0711-preview",
+      "arena_score": 1380,
+      "license": "modified mit",
+      "organization": "Moonshot"
+    },
+    {
+      "model": "GPT-4.1-2025-04-14",
+      "arena_score": 1380,
+      "license": "proprietary",
+      "organization": "OpenAI"
+    },
+    {
+      "model": "Gemini-Exp-1121",
+      "arena_score": 1379,
+      "license": "proprietary",
+      "organization": "Google"
+    },
+    {
+      "model": "Gemini-2.0-Flash-Thinking-Exp-1219",
+      "arena_score": 1378,
+      "license": "proprietary",
+      "organization": "Google"
+    }
+  ]
+}
