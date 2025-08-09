@@ -32,4 +32,59 @@ jobs:
       - name: Commit and push to main (robuste)
         run: |
           set -euo pipefail
-          git config --global user
+          git config --global user.name  'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+          FILES=(top_llms.md top_llms.json)
+
+          # Filtrer ceux qui existent
+          EXISTING=()
+          for f in "${FILES[@]}"; do
+            [[ -f "$f" ]] && EXISTING+=("$f")
+          done
+
+          if (( ${#EXISTING[@]} == 0 )); then
+            echo "ℹ️ Aucun fichier de sortie à committer."
+          else
+            git add "${EXISTING[@]}"
+            if git diff --cached --quiet; then
+              echo "✅ No changes to commit."
+            else
+              git commit -m "update: leaderboard [auto]"
+              git push
+              echo "🚀 Changes committed and pushed to main."
+            fi
+          fi
+
+      - name: Prepare site
+        run: |
+          set -euo pipefail
+          mkdir -p site
+          if [[ -f top_llms.md ]]; then
+            cp top_llms.md site/index.md
+          else
+            # Placeholder si le fichier n'a pas été généré
+            cat > site/index.md << 'EOF'
+            # 🏆 Top LLMs
+
+            _Aucun contenu généré lors de la dernière exécution._
+            EOF
+          fi
+
+          # Footer HTML
+          cat << 'EOF' >> site/index.md
+          <div align="center"><sub>Made with ♥ and automation.</sub></div>
+          <style>.footer { display: none; }</style>
+          EOF
+
+          # Copier Jekyll config/includes si présents
+          [[ -f _config.yml ]] && cp _config.yml site/
+          [[ -d _includes  ]] && cp -r _includes site/
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
+          publish_branch: gh-pages
+          enable_jekyll: true
