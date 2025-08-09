@@ -3,7 +3,7 @@ name: Update Top LLM Leaderboard
 on:
   schedule:
     - cron: '0 3 * * *'   # tous les jours à 03:00 UTC
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 jobs:
   update:
@@ -37,7 +37,6 @@ jobs:
 
           FILES=(top_llms.md top_llms.json)
 
-          # Filtrer ceux qui existent
           EXISTING=()
           for f in "${FILES[@]}"; do
             [[ -f "$f" ]] && EXISTING+=("$f")
@@ -57,26 +56,32 @@ jobs:
           fi
 
       - name: Prepare site
+        shell: bash
         run: |
-          set -euo pipefail
           mkdir -p site
-          if [[ -f top_llms.md ]]; then
+          if [ -f top_llms.md ]; then
             cp top_llms.md site/index.md
           else
-            echo "# 🏆 Top LLMs" > site/index.md
-            echo >> site/index.md
-            echo "_Aucun contenu généré lors de la dernière exécution._" >> site/index.md
+            printf '%s
+
+%s
+' '# 🏆 Top LLMs' '_Aucun contenu généré lors de la dernière exécution._' > site/index.md
           fi
 
-          # Footer HTML
-          echo '<div align="center"><sub>Made with ♥ and automation.</sub></div>' >> site/index.md
-          echo '<style>.footer { display: none; }</style>' >> site/index.md
+          printf '%s
+%s
+' '<div align="center"><sub>Made with ♥ and automation.</sub></div>' '<style>.footer { display: none; }</style>' >> site/index.md
 
-          # Copier Jekyll config/includes si présents
-          [[ -f _config.yml ]] && cp _config.yml site/
-          [[ -d _includes  ]] && cp -r _includes site/
+          [ -f _config.yml ] && cp _config.yml site/
+          [ -d _includes ] && cp -r _includes site/ || true
 
       - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
+          publish_branch: gh-pages
+          enable_jekyll: true
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
