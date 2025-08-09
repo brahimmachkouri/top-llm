@@ -63,19 +63,14 @@ jobs:
           if [[ -f top_llms.md ]]; then
             cp top_llms.md site/index.md
           else
-            # Placeholder si le fichier n'a pas été généré
-            cat > site/index.md << 'EOF'
-# 🏆 Top LLMs
-
-_Aucun contenu généré lors de la dernière exécution._
-EOF
+            echo "# 🏆 Top LLMs" > site/index.md
+            echo >> site/index.md
+            echo "_Aucun contenu généré lors de la dernière exécution._" >> site/index.md
           fi
 
           # Footer HTML
-          cat >> site/index.md << 'EOF'
-<div align="center"><sub>Made with ♥ and automation.</sub></div>
-<style>.footer { display: none; }</style>
-EOF
+          echo '<div align="center"><sub>Made with ♥ and automation.</sub></div>' >> site/index.md
+          echo '<style>.footer { display: none; }</style>' >> site/index.md
 
           # Copier Jekyll config/includes si présents
           [[ -f _config.yml ]] && cp _config.yml site/
