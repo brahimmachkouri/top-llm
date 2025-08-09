@@ -62,15 +62,10 @@ jobs:
           if [ -f top_llms.md ]; then
             cp top_llms.md site/index.md
           else
-            printf '%s
-
-%s
-' '# 🏆 Top LLMs' '_Aucun contenu généré lors de la dernière exécution._' > site/index.md
+            printf '_Aucun contenu généré lors de la dernière exécution._' > site/index.md
           fi
 
-          printf '%s
-%s
-' '<div align="center"><sub>Made with ♥ and automation.</sub></div>' '<style>.footer { display: none; }</style>' >> site/index.md
+          printf '<div align="center"><sub>Made with ♥ and automation.</sub></div><style>.footer { display: none; }</style>' >> site/index.md
 
           [ -f _config.yml ] && cp _config.yml site/
           [ -d _includes ] && cp -r _includes site/ || true
@@ -82,9 +77,4 @@ jobs:
           publish_dir: ./site
           publish_branch: gh-pages
           enable_jekyll: true
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site
-          publish_branch: gh-pages
-          enable_jekyll: true
+        
