@@ -65,17 +65,17 @@ jobs:
           else
             # Placeholder si le fichier n'a pas été généré
             cat > site/index.md << 'EOF'
-            # 🏆 Top LLMs
+# 🏆 Top LLMs
 
-            _Aucun contenu généré lors de la dernière exécution._
-            EOF
+_Aucun contenu généré lors de la dernière exécution._
+EOF
           fi
 
           # Footer HTML
-          cat << 'EOF' >> site/index.md
-          <div align="center"><sub>Made with ♥ and automation.</sub></div>
-          <style>.footer { display: none; }</style>
-          EOF
+          cat >> site/index.md << 'EOF'
+<div align="center"><sub>Made with ♥ and automation.</sub></div>
+<style>.footer { display: none; }</style>
+EOF
 
           # Copier Jekyll config/includes si présents
           [[ -f _config.yml ]] && cp _config.yml site/
