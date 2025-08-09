@@ -65,7 +65,7 @@ jobs:
             printf '_Aucun contenu généré lors de la dernière exécution._' > site/index.md
           fi
 
-          printf '<div align="center"><sub>Made with ♥ and automation.</sub></div><style>.footer { display: none; }</style>' >> site/index.md
+          #printf '<div align="center"><sub>Made with ♥ and automation.</sub></div><style>.footer { display: none; }</style>' >> site/index.md
 
           [ -f _config.yml ] && cp _config.yml site/
           [ -d _includes ] && cp -r _includes site/ || true
