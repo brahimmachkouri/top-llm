@@ -55,4 +55,4 @@
 ---
 
 <div align="center"><sub>Made with ♥ and automation.</sub></div>
-<style>.footer { display: none; }</style><div align="center"><sub>Made with ♥ and automation.</sub></div><style>.footer { display: none; }</style>
+<style>.footer { display: none; }</style>
